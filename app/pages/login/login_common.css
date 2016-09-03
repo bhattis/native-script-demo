@@ -70,6 +70,7 @@ Button, TextField {
 }
 .sign-up-stack {
   background-color: #311217;
+  width: 100;
 }
 .sign-up-stack Label {
   color: white;

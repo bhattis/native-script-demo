@@ -5,6 +5,7 @@ npm-debug.log
 app/**/*.js
 app/pages/**/*.js
 app/model/*.js
+app/*.js
 hooks/
 lib/
 node_modules/
