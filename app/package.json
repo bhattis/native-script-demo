@@ -1,13 +1,13 @@
 {
     "private": false,
     "nativescript": {
-        "id": "org.nativescript.helloworldng"
+        "id": "com.metaware.myapp"
     },
     "name": "tns-template-hello-world-ng",
     "main": "main.js",
     "version": "2.2.1",
-    "author": "Telerik <support@telerik.com>",
-    "description": "Nativescript Angular Hello World template",
+    "author": "Sandeep Bhatti <sandeep@metawarelabs.com>",
+    "description": "Nativescript Angular template",
     "license": "BSD",
     "keywords": [
         "telerik",
