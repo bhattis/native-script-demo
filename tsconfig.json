@@ -7,7 +7,7 @@
     "noEmitHelpers": true,
     "removeComments": false,
     "noImplicitAny": false,
-    "compileOnSave": false
+    "sourceMap": false
   },
   "exclude": [
     "node_modules",

@@ -1,3 +1,11 @@
+<ActionBar title="My App">
+  <ActionItem (tap)="onShare()"
+    android.systemIcon="ic_menu_share" android.position="actionBar">
+  </ActionItem>
+  <ActionItem (tap)="onLogout()"
+    text="Logout" android.position="popup">
+  </ActionItem>
+</ActionBar>
 <StackLayout>
-    <Label text="Dashboard Page" class="title"></Label>
+  <Label text="Dashboard Page" class="title"></Label>
 </StackLayout>

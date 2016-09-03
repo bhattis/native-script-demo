@@ -5,6 +5,9 @@ import * as appSettings        from "application-settings";
 @Injectable()
 export class AuthGuard implements CanActivate {
   
+  private userToken: string;
+  private objectId: string;
+
   constructor(private router: Router) {  }
 
   canActivate() {
