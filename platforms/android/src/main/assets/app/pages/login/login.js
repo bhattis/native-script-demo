@@ -9,17 +9,16 @@ var page_1 = require("ui/page");
 var user_1 = require("../../model/user");
 var hint_util_1 = require("../shared/hint_util");
 var dialog_util_1 = require("../shared/dialog_util");
+var database_service_1 = require("../../services/database_service");
+var appSettings = require("application-settings");
 var LoginPage = (function () {
-    function LoginPage(router, 
-        // private userService: LoginService,
-        page) {
+    function LoginPage(router, backend, page) {
         this.router = router;
+        this.backend = backend;
         this.page = page;
         this.isLoggingIn = true;
         this.isAuthenticating = false;
         this.user = new user_1.User();
-        // this.user.email = "ngconf@telerik33.com";
-        // this.user.password = "password";
     }
     LoginPage.prototype.ngOnInit = function () {
         this.page.actionBarHidden = true;
@@ -46,15 +45,29 @@ var LoginPage = (function () {
             dialog_util_1.alert("MyApp requires an internet connection to log in.");
             return;
         }
-        this.userService.login(this.user)
-            .then(function () {
-            _this.isAuthenticating = false;
-            _this.router.navigate(["/"]);
-        })
-            .catch(function () {
+        this.backend.login(this.user).subscribe(function (response) { _this.loginResponse(response); }, function (error) {
+            console.log("login error: ", [error]);
             dialog_util_1.alert("Unfortunately we could not find your account.");
             _this.isAuthenticating = false;
+        }, function () {
+            _this.isAuthenticating = false;
+            _this.router.navigate(["/"]);
         });
+    };
+    LoginPage.prototype.loginResponse = function (response) {
+        var _this = this;
+        Object.keys(response).forEach(function (key) {
+            if (key == "user-token") {
+                _this.user.userToken = response[key];
+            }
+            if (key == "objectId") {
+                _this.user.objectId = response[key];
+            }
+        });
+        console.log("response.objectId: ", this.user.objectId);
+        console.log("token: " + this.user.userToken);
+        appSettings.setString("userToken", this.user.userToken);
+        appSettings.setString("objectId", this.user.objectId);
     };
     LoginPage.prototype.signUp = function () {
         var _this = this;
@@ -62,33 +75,26 @@ var LoginPage = (function () {
             dialog_util_1.alert("MyApp requires an internet connection to register.");
             return;
         }
-        this.userService.register(this.user)
-            .then(function () {
+        this.backend.register(this.user).subscribe(function (response) { }, function (error) {
+            console.log("Signup error: ", [error]);
+            _this.isAuthenticating = false;
+        }, function () {
             dialog_util_1.alert("Your account was successfully created.");
             _this.isAuthenticating = false;
             _this.toggleDisplay();
-        })
-            .catch(function (message) {
-            if (message.match(/same user/)) {
-                dialog_util_1.alert("This email address is already in use.");
-            }
-            else {
-                dialog_util_1.alert("Unfortunately we were unable to create your account.");
-            }
-            _this.isAuthenticating = false;
         });
     };
     LoginPage.prototype.forgotPassword = function () {
         var _this = this;
         dialogs_1.prompt({
             title: "Forgot Password",
-            message: "Enter the email address you used to register for Groceries to reset your password.",
+            message: "Enter the email address you used to register for MyApp to reset your password.",
             defaultText: "",
             okButtonText: "Ok",
             cancelButtonText: "Cancel"
         }).then(function (data) {
             if (data.result) {
-                _this.userService.resetPassword(data.text.trim())
+                _this.user.resetPassword(data.text.trim())
                     .then(function () {
                     dialog_util_1.alert("Your password was successfully reset. Please check your email for instructions on choosing a new password.");
                 })
@@ -185,7 +191,7 @@ var LoginPage = (function () {
             templateUrl: "pages/login/login.html",
             styleUrls: ["pages/login/login_common.css", "pages/login/login_component.css"]
         }), 
-        __metadata('design:paramtypes', [router_1.Router, page_1.Page])
+        __metadata('design:paramtypes', [router_1.Router, database_service_1.DatabaseService, page_1.Page])
     ], LoginPage);
     return LoginPage;
 }());

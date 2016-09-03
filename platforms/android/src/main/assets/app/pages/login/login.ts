@@ -12,6 +12,9 @@ import { TextField }              from "ui/text-field";
 import { User }                   from "../../model/user";
 import { setHintColor }           from "../shared/hint_util";
 import { alert }                  from "../shared/dialog_util";
+import { DatabaseService }        from "../../services/database_service"
+import * as appSettings           from "application-settings";
+
 
 @Component({
   selector:    "login",
@@ -34,11 +37,9 @@ export class LoginPage implements OnInit {
   @ViewChild("password") password: ElementRef;
 
   constructor(private router: Router,
-    // private userService: LoginService,
+    private backend: DatabaseService,
     private page: Page) {
     this.user = new User();
-    // this.user.email = "ngconf@telerik33.com";
-    // this.user.password = "password";
   }
 
   ngOnInit() {
@@ -69,15 +70,33 @@ export class LoginPage implements OnInit {
       return;
     }
 
-    this.userService.login(this.user)
-      .then(() => {
+    this.backend.login(this.user).subscribe(
+      response => { this.loginResponse(response) },
+      error => { 
+        console.log("login error: ", [error]);
+        alert("Unfortunately we could not find your account.");
+        this.isAuthenticating = false; 
+      },
+      () => { 
         this.isAuthenticating = false;
         this.router.navigate(["/"]);
-      })
-      .catch(() => {
-        alert("Unfortunately we could not find your account.");
-        this.isAuthenticating = false;
-      });
+      }
+    );
+  }
+
+  loginResponse(response) {
+    Object.keys(response).forEach((key) => {
+      if (key == "user-token") {
+        this.user.userToken = response[key];
+      }
+      if (key == "objectId") {
+        this.user.objectId = response[key];
+      }
+    });
+    console.log("response.objectId: ", this.user.objectId);
+    console.log("token: " + this.user.userToken);
+    appSettings.setString("userToken", this.user.userToken);
+    appSettings.setString("objectId", this.user.objectId);
   }
 
   signUp() {
@@ -85,33 +104,30 @@ export class LoginPage implements OnInit {
       alert("MyApp requires an internet connection to register.");
       return;
     }
-
-    this.userService.register(this.user)
-      .then(() => {
+    this.backend.register(this.user).subscribe(
+      response => { },
+      error => { 
+        console.log("Signup error: ", [error])
+        this.isAuthenticating = false;
+      },
+      () => {
         alert("Your account was successfully created.");
         this.isAuthenticating = false;
         this.toggleDisplay();
-      })
-      .catch((message) => {
-        if (message.match(/same user/)) {
-          alert("This email address is already in use.");
-        } else {
-          alert("Unfortunately we were unable to create your account.");
-        }
-        this.isAuthenticating = false;
-      });
+      }
+    )
   }
 
   forgotPassword() {
     prompt({
       title: "Forgot Password",
-      message: "Enter the email address you used to register for Groceries to reset your password.",
+      message: "Enter the email address you used to register for MyApp to reset your password.",
       defaultText: "",
       okButtonText: "Ok",
       cancelButtonText: "Cancel"
     }).then((data) => {
       if (data.result) {
-        this.userService.resetPassword(data.text.trim())
+        this.user.resetPassword(data.text.trim())
           .then(() => {
             alert("Your password was successfully reset. Please check your email for instructions on choosing a new password.");
           })

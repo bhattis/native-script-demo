@@ -693,4 +693,3 @@ task deleteFlavors (type: Delete){
 
 deleteFlavors.dependsOn(deleteMetadata)
 clean.dependsOn(deleteFlavors)
-
