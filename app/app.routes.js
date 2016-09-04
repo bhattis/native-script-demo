@@ -9,6 +9,6 @@ exports.routes = [
     { path: "login", component: login_1.LoginPage }
 ];
 exports.APP_ROUTER_PROVIDERS = [
-    router_1.nsProvideRouter(exports.routes, { enableTracing: true }),
+    router_1.nsProvideRouter(exports.routes, { enableTracing: false }),
     auth_guard_1.AuthGuard
 ];
