@@ -88,15 +88,14 @@ export class LoginPage implements OnInit {
     Object.keys(response).forEach((key) => {
       if (key == "user-token") {
         this.user.userToken = response[key];
+      } else {
+        this.user[key] = response[key];
       }
-      if (key == "objectId") {
-        this.user.objectId = response[key];
-      }
+
     });
-    console.log("response.objectId: ", this.user.objectId);
-    console.log("token: " + this.user.userToken);
     appSettings.setString("userToken", this.user.userToken);
     appSettings.setString("objectId", this.user.objectId);
+    appSettings.setString("loggedInUser", JSON.stringify(this.user));
   }
 
   signUp() {

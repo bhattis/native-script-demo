@@ -60,14 +60,13 @@ var LoginPage = (function () {
             if (key == "user-token") {
                 _this.user.userToken = response[key];
             }
-            if (key == "objectId") {
-                _this.user.objectId = response[key];
+            else {
+                _this.user[key] = response[key];
             }
         });
-        console.log("response.objectId: ", this.user.objectId);
-        console.log("token: " + this.user.userToken);
         appSettings.setString("userToken", this.user.userToken);
         appSettings.setString("objectId", this.user.objectId);
+        appSettings.setString("loggedInUser", JSON.stringify(this.user));
     };
     LoginPage.prototype.signUp = function () {
         var _this = this;

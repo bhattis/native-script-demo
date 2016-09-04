@@ -19,8 +19,12 @@ import * as appSettings           from "application-settings";
 
 export class DashboardPage {
 
+  private user: User;
+
   constructor(private backend: DatabaseService,
-    private router: Router) { }
+    private router: Router) { 
+      this.user = JSON.parse(appSettings.getString("loggedInUser"));
+    }
 
   onLogout() {
     if (getConnectionType() === connectionType.none) {
