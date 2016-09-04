@@ -5,11 +5,12 @@ import {DashboardPage}   from "./pages/dashboard/dashboard";
 import {AuthGuard}       from "./auth.guard";
 
 export const routes: RouterConfig = [
-  { path: "", component: DashboardPage, canActivate: [AuthGuard] },
+  { path: "", redirectTo: "/dashboard", terminal: true },
+  { path: "dashboard", component: DashboardPage, canActivate: [AuthGuard] },
   { path: "login", component: LoginPage }
 ];
 
 export const APP_ROUTER_PROVIDERS = [
-  nsProvideRouter(routes, { enableTracing: false  }),
+  nsProvideRouter(routes, { enableTracing: true  }),
   AuthGuard
 ];
