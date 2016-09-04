@@ -17,3 +17,8 @@ button {
     text-align: center;
     margin: 0 20;
 } 
+
+.custom-action-bar {
+  background-color: #E95420;
+  color: white;
+}
