@@ -58,4 +58,13 @@ export class DatabaseService {
     }
   }
 
+  reset_password(email) {
+    let resetPasswordUrl = this._apiUrl + "users/restorepassword/" + email;
+    console.log("resetUrl: ", resetPasswordUrl);
+    return this.http.get(
+      resetPasswordUrl,
+      { headers: this._custom_header }
+    )
+  }
+
 }

@@ -93,12 +93,11 @@ var LoginPage = (function () {
             cancelButtonText: "Cancel"
         }).then(function (data) {
             if (data.result) {
-                _this.user.resetPassword(data.text.trim())
-                    .then(function () {
-                    dialog_util_1.alert("Your password was successfully reset. Please check your email for instructions on choosing a new password.");
-                })
-                    .catch(function () {
+                _this.backend.reset_password(data.text.trim()).subscribe(function (response) { }, function (error) {
+                    console.log("reset password error: ", JSON.stringify(error));
                     dialog_util_1.alert("Unfortunately, an error occurred resetting your password.");
+                }, function () {
+                    dialog_util_1.alert("Your password was successfully reset. Please check your email for instructions on choosing a new password.");
                 });
             }
         });

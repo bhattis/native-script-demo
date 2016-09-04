@@ -126,13 +126,15 @@ export class LoginPage implements OnInit {
       cancelButtonText: "Cancel"
     }).then((data) => {
       if (data.result) {
-        this.user.resetPassword(data.text.trim())
-          .then(() => {
-            alert("Your password was successfully reset. Please check your email for instructions on choosing a new password.");
-          })
-          .catch(() => {
+        this.backend.reset_password(data.text.trim()).subscribe(
+          response => { },
+          error    => { 
+            console.log("reset password error: ", JSON.stringify(error));
             alert("Unfortunately, an error occurred resetting your password.");
-          });
+          },
+          ()       => { 
+            alert("Your password was successfully reset. Please check your email for instructions on choosing a new password."); }
+        );
       }
     });
   }
